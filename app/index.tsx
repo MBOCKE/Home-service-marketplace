@@ -34,7 +34,7 @@ export default function LandingScreen() {
   };
 
   const handleProvideService = () => {
-    router.push('/worker');
+    router.push('../worker/home');
   };
 
   return (
