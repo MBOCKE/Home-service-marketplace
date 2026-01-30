@@ -1,182 +1,213 @@
 // app/index.tsx
-// Landing screen (HS Market Place) converted from Builder.io
-// and updated to use expo-linear-gradient for the background.
+// Refined landing screen with:
+// - Same 4-stop yellow gradient as before
+// - Clear separation between top (logo) and bottom (buttons)
+// - HS and "Market Place" tightly grouped
 
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 
-// We have two main roles in the app.
-// For this screen we don't need to store it yet, just route to the right area.
-type Role = 'client' | 'worker';
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+const COLORS = {
+  yellowTop: '#FFD36B',
+  yellowSoft: 'rgba(255, 211, 107, 0.3)',
+  yellowFade: 'rgba(217, 217, 217, 0)',
+  cream: '#FFFDF5',
+  navy: '#103046',
+  white: '#FFFFFF',
+};
 
 export default function LandingScreen() {
   const router = useRouter();
 
-  // Navigate to the client flow when user chooses "Book service"
   const handleBookService = () => {
-    router.push('/client');
+    router.push('../client/home');
   };
 
-  // Navigate to the worker flow when user chooses "Provide service"
   const handleProvideService = () => {
     router.push('/worker');
   };
 
   return (
-    // Root container fills the entire screen
     <View style={styles.root}>
-      {/* Background gradient behind everything */}
+      {/* Top gradient background (about 65% of screen) */}
       <LinearGradient
-        // Colors approximating your original CSS gradient:
-        // linear-gradient(180deg, #FFD36B 0%, #FFD36B 50%, rgba(255, 211, 107, 0.3) 80%, rgba(217, 217, 217, 0) 100%)
         colors={[
-          '#FFD36B',
-          '#FFD36B',
-          'rgba(255, 211, 107, 0.3)',
-          'rgba(217, 217, 217, 0)',
+          COLORS.yellowTop,
+          COLORS.yellowTop,
+          COLORS.yellowSoft,
+          COLORS.yellowFade,
         ]}
         locations={[0, 0.5, 0.8, 1]}
-        style={styles.backgroundBlock}
-      />
+        style={styles.topSection}
+      >
+        {/* Branding perfectly centered in the gradient area */}
+        <View style={styles.brandContainer}>
+          <Text style={styles.logoText}>HS</Text>
+          <Text style={styles.subtitleText}>Market Place</Text>
+        </View>
+      </LinearGradient>
 
-      {/* Foreground content */}
-      <View style={styles.contentWrapper}>
-        {/* Main vertical stack, centered horizontally */}
-        <View style={styles.card}>
-          {/* Logo section: big HS + "Market Place" */}
-          <View style={styles.logoSection}>
-            <Text style={styles.logoText}>HS</Text>
-            <Text style={styles.logoSubtitle}>Market Place</Text>
-          </View>
+      {/* Curved transition into cream section */}
+      <View style={styles.curveWrapper}>
+        <View style={styles.curveShadow} />
+        <View style={styles.curve} />
+      </View>
 
-          {/* Two main action buttons */}
-          <View style={styles.buttonsContainer}>
-            {/* Book service (client path) */}
-            <TouchableOpacity
-              style={styles.bookButton}
-              onPress={handleBookService}
-              activeOpacity={0.8}
+      {/* Bottom cream section with buttons pinned lower */}
+      <View style={styles.bottomSection}>
+        <View style={styles.buttonsContainer}>
+          {/* Secondary: Book service */}
+          <TouchableOpacity
+            style={styles.secondaryButton}
+            activeOpacity={0.8}
+            onPress={handleBookService}
+          >
+            <Text style={styles.secondaryButtonText}>Book service</Text>
+            <Text style={styles.secondaryButtonIcon} accessibilityLabel="worker">
+              👷
+            </Text>
+          </TouchableOpacity>
+
+          {/* Primary: Provide service */}
+          <TouchableOpacity
+            style={styles.primaryButton}
+            activeOpacity={0.8}
+            onPress={handleProvideService}
+          >
+            <Text style={styles.primaryButtonText}>Provide service</Text>
+            <Text
+              style={styles.primaryButtonIcon}
+              accessibilityLabel="tools"
             >
-              <Text style={styles.bookButtonText}>Book service</Text>
-              <Text
-                style={styles.bookButtonEmoji}
-                accessibilityLabel="service"
-              >
-                👨‍💼
-              </Text>
-            </TouchableOpacity>
-
-            {/* Provide service (worker path) */}
-            <TouchableOpacity
-              style={styles.provideButton}
-              onPress={handleProvideService}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.provideButtonText}>Provide service</Text>
-              {/* Simple placeholder icon (X). We can swap this for a vector icon later. */}
-              <Text style={styles.provideButtonIcon}>🛠️</Text>
-            </TouchableOpacity>
-          </View>
+              🛠️
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
   );
 }
 
-// Styles: tuned to approximate the Tailwind-based web design
-// and your Figma, but you can adjust colors, sizes and spacing as needed.
+const TOP_SECTION_RATIO = 0.65;
+
 const styles = StyleSheet.create({
-  // Full-screen container
   root: {
     flex: 1,
+    backgroundColor: COLORS.cream,
   },
-  // Gradient background fills the screen behind everything
-  backgroundBlock: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  // Wrapper that centers content and mimics max-width on mobile
-  contentWrapper: {
-    flex: 1,
-    paddingHorizontal: 16,
+  topSection: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: SCREEN_HEIGHT * TOP_SECTION_RATIO,
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
   },
-  // Central column
-  card: {
-    width: '100%',
-    maxWidth: 380, // similar to max-w-md
+  brandContainer: {
     alignItems: 'center',
-    paddingVertical: 32,
+    // Very small vertical gap between HS and Market Place
+    marginBottom: 0,
   },
-  // Logo area
-  logoSection: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  // Big HS text
   logoText: {
-    fontSize: 120, // approximates clamp(120px, 28vw, 175px) on phones
+    fontSize: 120,
     fontWeight: '900',
-    letterSpacing: -6, // negative tracking
-    color: '#0B1437', // brand navy – adjust to exact Figma hex if needed
-    lineHeight: 120,
+    letterSpacing: -4,
+    color: COLORS.navy,
+    lineHeight: 118, // slightly less than font size to pull subtitle closer
   },
-  // "Market Place" subtitle
-  logoSubtitle: {
-    marginTop: 4,
+  subtitleText: {
+    marginTop: 2, // very tight separation
     fontSize: 20,
-    fontWeight: '400',
-    color: '#0B1437',
+    fontWeight: '500',
+    color: COLORS.navy,
   },
-  // Buttons container
+  curveWrapper: {
+    position: 'absolute',
+    top: SCREEN_HEIGHT * TOP_SECTION_RATIO - 40,
+    left: 0,
+    right: 0,
+    height: 120,
+    alignItems: 'stretch',
+  },
+  curveShadow: {
+    position: 'absolute',
+    top: 48,
+    left: 0,
+    right: 0,
+    height: 48,
+    backgroundColor: '#00000020',
+    shadowColor: '#000000',
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    opacity: 0.25,
+  },
+  curve: {
+    flex: 1,
+    backgroundColor: COLORS.cream,
+    borderTopLeftRadius: 80,
+    borderTopRightRadius: 160,
+  },
+  bottomSection: {
+    flex: 1,
+    // Place content in lower part of cream section
+    justifyContent: 'flex-end',
+    paddingHorizontal: 24,
+    paddingBottom: 56,
+  },
   buttonsContainer: {
     width: '100%',
-    paddingHorizontal: 24,
-    gap: 24, // similar to gap-10
+    alignItems: 'center',
+    rowGap: 16,
   },
-  // "Book service" button: transparent with navy border
-  bookButton: {
+  secondaryButton: {
+    width: '80%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: 9999,
     borderWidth: 2,
-    borderColor: '#0B1437',
-    borderRadius: 999, // full rounded
-    paddingVertical: 16,
-    paddingHorizontal: 24,
+    borderColor: COLORS.navy,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+  },
+  secondaryButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: COLORS.navy,
+  },
+  secondaryButtonIcon: {
+    fontSize: 24,
+  },
+  primaryButton: {
+    width: '80%',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    columnGap: 12,
-    backgroundColor: 'transparent',
+    justifyContent: 'space-between',
+    borderRadius: 9999,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    backgroundColor: COLORS.navy,
   },
-  bookButtonText: {
-    color: '#0B1437',
-    fontSize: 18,
+  primaryButtonText: {
+    fontSize: 16,
     fontWeight: '700',
+    color: COLORS.white,
   },
-  bookButtonEmoji: {
+  primaryButtonIcon: {
     fontSize: 22,
-  },
-  // "Provide service" button: solid navy with white text
-  provideButton: {
-    borderRadius: 999,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    columnGap: 12,
-    backgroundColor: '#0B1437',
-  },
-  provideButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  provideButtonIcon: {
-    color: '#FFFFFF',
-    fontSize: 20,
-    fontWeight: '700',
+    color: COLORS.white,
   },
 });
-
