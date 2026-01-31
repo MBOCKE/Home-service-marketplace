@@ -33,8 +33,8 @@ const ClientFilterScreen: React.FC = () => {
   const router = useRouter();
 
   const handleSearch = () => {
-    // Later: trigger search with selected filters
-    router.back(); // For now, just go back to home
+    // Navigate to listing page with search results
+    router.push('/client/home/listing');
   };
 
   return (
