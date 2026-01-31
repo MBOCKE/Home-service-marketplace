@@ -100,8 +100,15 @@ const ClientFilterScreen: React.FC = () => {
         <NavItem label="Home" icon="🏠" isActive={false} />
         <NavItem label="Book" icon="👷" isActive={true} />
         <NavItem label="Favorites" icon="❤️" isActive={false} />
-        <NavItem label="Provide" icon="🛠️" isActive={false} />
-        <NavItem label="Account" icon="👤" isActive={false} />
+        <NavItem label="Message" icon="💬" isActive={false} />
+        <TouchableOpacity
+          style={styles.navItem}
+          activeOpacity={0.7}
+          onPress={() => router.push('/authentication/signin')}
+        >
+          <Text style={styles.navIcon}>👤</Text>
+          <Text style={styles.navLabel}>Account</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

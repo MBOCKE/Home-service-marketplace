@@ -1,6 +1,6 @@
 // app/worker/index.tsx (or app/worker/home/index.tsx)
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 
 // IMPORTANT: import your local image asset
 // Make sure this path matches your actual folder structure
@@ -39,6 +40,9 @@ const categories = [
 ];
 
 const WorkerHomeScreen: React.FC = () => {
+  const router = useRouter();
+  const [isBook, setIsBook] = useState(true); // true for BOOK, false for PROVIDE
+
   return (
     <View style={styles.root}>
       {/* Yellow background */}
@@ -68,14 +72,23 @@ const WorkerHomeScreen: React.FC = () => {
               </View>
 
               {/* BOOK / provide toggle */}
-              <View style={styles.togglePill}>
-                <View style={styles.toggleLeftActive}>
-                  <Text style={styles.toggleLeftText}>BOOK</Text>
+              <TouchableOpacity
+                style={styles.togglePill}
+                onPress={() => {
+                  const newIsBook = !isBook;
+                  setIsBook(newIsBook);
+                  if (newIsBook) {
+                    router.push('/client/home');
+                  }
+                }}
+              >
+                <View style={isBook ? styles.toggleLeftActive : styles.toggleLeftInactive}>
+                  <Text style={isBook ? styles.toggleLeftText : styles.toggleLeftTextInactive}>BOOK</Text>
                 </View>
-                <View style={styles.toggleRightInactive}>
-                  <Text style={styles.toggleRightText}>provide</Text>
+                <View style={!isBook ? styles.toggleRightActive : styles.toggleRightInactive}>
+                  <Text style={!isBook ? styles.toggleRightTextActive : styles.toggleRightText}>provide</Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             </View>
 
             {/* Headline */}
@@ -130,7 +143,21 @@ const WorkerHomeScreen: React.FC = () => {
         </View>
       </View>
 
-
+      {/* Bottom Navigation */}
+      <View style={styles.bottomNav}>
+        <NavItem label="Home" icon="🏠" isActive={true} />
+        <NavItem label="Book" icon="👷" isActive={false} />
+        <NavItem label="Favorites" icon="❤️" isActive={false} />
+        <NavItem label="Message" icon="💬" isActive={false} />
+        <TouchableOpacity
+          style={styles.navItem}
+          activeOpacity={0.7}
+          onPress={() => router.push('/authentication/signin')}
+        >
+          <Text style={styles.navIcon}>👤</Text>
+          <Text style={styles.navLabel}>Account</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -162,7 +189,9 @@ const styles = StyleSheet.create({
 
   heroContainer: {
     height: SCREEN_HEIGHT * 0.4,
-    overflow: 'hidden', // soft rounded bottom if you want
+    overflow: 'hidden',
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
   },
   heroImage: {
     flex: 1,
@@ -223,6 +252,27 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: COLORS.navy,
   },
+  toggleLeftInactive: {
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  toggleLeftTextInactive: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: COLORS.navy,
+  },
+  toggleRightActive: {
+    backgroundColor: COLORS.yellow,
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  toggleRightTextActive: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: COLORS.navy,
+  },
   heroHeadlineWrap: {
     width: '80%',
   },
@@ -261,6 +311,7 @@ const styles = StyleSheet.create({
   // CTA
   ctaSection: {
     alignItems: 'center',
+    marginTop: SCREEN_HEIGHT * 0.06,
     marginBottom: 24,
   },
   ctaText: {
@@ -302,15 +353,14 @@ const styles = StyleSheet.create({
   },
   categoryRow: {
     justifyContent: 'space-between',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   categoryCard: {
     width: (SCREEN_WIDTH - 40 - 12 * 3) / 4,
     aspectRatio: 1,
     borderRadius: 12,
-    backgroundColor: COLORS.yellowPale,
-    borderWidth: 1,
-    borderColor: COLORS.creamBorder,
+    borderWidth: 2,
+    borderColor: COLORS.navy,
     alignItems: 'center',
     justifyContent: 'center',
   },

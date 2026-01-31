@@ -30,11 +30,11 @@ export default function LandingScreen() {
   const router = useRouter();
 
   const handleBookService = () => {
-    router.push('../client/home');
+    router.push('/client/home');
   };
 
   const handleProvideService = () => {
-    router.push('../worker/home');
+    router.push('/worker/home');
   };
 
   return (
